@@ -10,17 +10,26 @@ This project benchmarks the architectural shift from **template-based synthetic 
 
 ## The Paradigm Shift
 
-**2020 Approach:** spaCy (GloVe embeddings) + rule-based templates + DBSCAN clustering
+**2020 Approach (Manning LiveProject):**
+- Template-based synthetic data ("Zika outbreak in Miami")
+- spaCy NER with static GloVe embeddings (2014)
+- Manual disease list curation (100+ entries)
+- DBSCAN clustering
+- Deterministic, zero-cost, fast
 
-**2025 Approach:** LLM-generated data + Transformer NER + same DBSCAN clustering
+**2025 Replication (LLM-Enhanced):**
+- LLM-generated synthetic headlines
+- Transformer NER / LLM prompts
+- Zero-shot entity recognition
+- Same DBSCAN clustering (geometry unchanged)
+- Non-deterministic, API costs, slower
 
-**The Results:**
-- Location extraction: **71% → 84%** (+13%)
-- Disease extraction: **68% → 77%** (+9%)
-- Clusters detected: **9 → 13** (+44%)
-- **But:** Latency **0.8s → 3.2s** (4x slower), Cost **$0 → $0.40** per 200 headlines
+**2025 Measured Results:**
+- **Entity Extraction:** 168 locations (84%), 154 diseases (77%) identified
+- **Spatial Clustering:** 13 outbreak clusters via DBSCAN
+- **Geographic Coverage:** Southeast Asia (Jakarta: 27, Bangkok: 17), Americas (Miami: 18)
 
-**The Insight:** LLMs didn't eliminate NLP engineering—they *shifted the bottleneck* from curating entity lists to debugging prompts and managing API costs.
+**The Architectural Insight:** LLMs didn't eliminate NLP engineering—they *shifted the bottleneck* from manual entity curation to prompt engineering and hallucination handling. The tradeoff: better generalization, but new costs (API fees, non-determinism, explainability loss).
 
 ## Replication Results (2025)
 
@@ -49,13 +58,15 @@ Successfully replicated the core analysis pipeline with modern tools:
 
 ### Architecture Comparison: 2020 vs 2025
 
-| Component | 2020 (Static Embeddings) | 2025 (LLM-Enhanced) | Impact |
-|-----------|--------------------------|---------------------|--------|
-| **Data Generation** | Template-based synthetic headlines | LLM-generated headlines | +Diversity, +Naturalness |
-| **Entity Extraction** | spaCy (GloVe embeddings) | Transformer NER / LLM prompts | +13% accuracy, but 4x latency |
-| **Clustering** | DBSCAN (ε=500km) | DBSCAN (ε=400km) | **Unchanged** (geometry, not NLP) |
-| **Cost** | $0 (local inference) | $0.002/headline (API calls) | New constraint |
-| **Explainability** | Rule-based (transparent) | LLM-based (black box) | Engineering tradeoff |
+| Component | 2020 (Static Embeddings) | 2025 (LLM-Enhanced) | Shift |
+|-----------|--------------------------|---------------------|-------|
+| **Data Generation** | Template-based | LLM-generated | Repetitive → Natural phrasing |
+| **Entity Extraction** | spaCy (GloVe 2014) | Transformer NER / LLM prompts | Static → Contextual embeddings |
+| **Entity Coverage** | Manual list (100+ diseases) | Zero-shot recognition | Manual → Automatic |
+| **Clustering** | DBSCAN (ε=500km) | DBSCAN (ε=400km) | **Unchanged** (geometry) |
+| **Determinism** | Reproducible outputs | Non-deterministic (temperature >0) | Stable → Stochastic |
+| **Cost** | Free (local CPU) | API fees or GPU required | $0 → Usage-based |
+| **Explainability** | Rule-based (transparent) | LLM-based (black box) | Clear → Opaque |
 
 ### Limitations Identified
 1. **Geographic Bias**: Current dataset lacks European/Middle Eastern outbreaks
